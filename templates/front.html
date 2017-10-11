@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>The Woot Monkeys</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="/static/js/ajax.js"></script>
+
+		<style>
+			body {
+				margin:0;
+				padding:0;
+			}
+			a {
+				text-decoration: none;
+				color: inherit
+			}
+			table {
+				border-collapse: collapse;
+				}
+			
+			.container {
+				margin: 0 auto;
+				padding: 0;
+				width: 800px;
+				
+				background-color: white;
+			}
+			
+			.header .nav {
+				background-color: #f1f1f1;
+				margin: 0 auto 0 auto;
+				padding: 12px 6px 6px 6px;
+				position: relative;
+				top: -6px;
+				width: 620px;
+				-moz-border-radius: 6px; -webkit-border-radius: 6px; -o-border-radius: 6px; -ms-border-radius: 6px; border-radius: 6px;
+				font-family: Arial,sans-serif;
+				font-size: 14px;
+			}
+			.header .nav a {
+				padding: 0 10px;
+			}
+			
+			.body {
+				margin: 40px 0 40px 0;
+			}
+			.body .nav {
+				margin: 10px
+			}
+			.body .nav a { 
+				font-family: Arial,sans-serif;
+				font-weight: bold;
+				padding: 0 10px;
+				background-color: #eee;
+				border: 1px solid #999;
+				color: #222
+			}
+			.body .nav a:hover {
+				background-color: #aaa;
+				color: #000
+			}
+			
+			.content {
+				margin: 0 auto;
+				xpadding-top: 10px;
+				border-top: 1px solid #ccc;
+				border-bottom: 1px solid #ccc;
+				width: 620px;
+			}
+			
+			.details {
+				font-family: 'Trebuchet MS',Trebuchet,Calibri,Tahoma,Arial,sans-serif;
+				font-size: 10pt;
+				xbackground-color: #f8f8f8;
+				color: #ccc;
+				margin: 10px auto 10px auto;
+				padding: 0;
+				width: 632px;
+				-moz-border-radius: 6px; -webkit-border-radius: 6px; -o-border-radius: 6px; -ms-border-radius: 6px; border-radius: 6px;
+			}
+			.details span {
+				color: #bbb
+			}
+			
+			.footer {
+				font-family: 'Trebuchet MS',Trebuchet,Calibri,Tahoma,Arial,sans-serif;
+				font-size: 8pt;
+				color: #ccc
+			}
+			.footer a {
+				color: #aaa
+			}
+			
+			.content-container {
+				border: 0;
+				}
+			
+			/* stackoverflow style */
+			.vote {
+				display: none;
+				float: left;
+				margin-top: 32px;
+				font-family: Arial;
+				}
+			
+			.vote-up-off, .vote-down-off, .star-off {
+				text-indent: -9999em;
+				font-size: 1px;
+				
+				background-position: 0px -265px;
+				display: block;
+				margin: 0 auto;
+				width: 41px;
+				height: 25px;
+				
+				background-image: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=6');
+				background-repeat: no-repeat;
+				overflow: hidden;
+				}
+			
+			.vote-down-off {
+				background-position: 0px -300px;
+				}
+			
+			.vote-count-post {
+				display: block;
+				font-size: 24px;
+				color: #555;
+				}
+			
+			.star-off, .star-on {
+				background-position: 0px -150px;
+				width: 33px;
+				height: 31px;
+				}
+			
+			.favoritecount {
+				text-align: center;
+				color: #808185;
+				}
+				
+			/* udacity style */
+			.vote-buttons {
+				float: left;
+				margin-top: 25px;
+				margin-left: 40px;
+				font-family: Arial;
+				text-align: center;
+				}
+				
+			a.dialog-vote {
+				background-image: url('https://web.archive.org/web/20121202103224/http://forums.udacity.com/m/default/media/images/sprite.png');
+				display: block;
+				position: relative;
+				margin-bottom: 5px;
+				}
+				
+			a.dialog-vote.up {
+				background-position: left -70px;
+				width: 24px;
+				height: 24px;
+				background-repeat: no-repeat;
+				background-color: transparent;
+				}
+			
+			a.dialog-vote.up.on, a.dialog-vote.up:hover {
+				background-position: left -94px;
+				}
+
+			a.dialog-vote.down {
+				background-position: left -118px;
+				width: 24px;
+				height: 24px;
+				background-repeat: no-repeat;
+				background-color: transparent;
+				margin-top: 5px;
+				}
+
+			a.dialog-vote.down.on, a.dialog-vote.down:hover {
+				background-position: left -142px;
+				}
+
+			.dialog-score {
+				color: #777;
+				font-family: Karla;
+				font-size: 165%;
+				font-weight: bold;
+				padding: 0 0 3px;
+				}
+			</style>
+			
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-40812082-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+	</head>
+	
+	<body>
+	<div class="container" style="text-align: center">
+	
+		<div class="header">
+		<!--div class="nav">
+		<a href="/">Home</a>
+		<a href="/contact">Contact</a>
+		<a href="/donate">Donate</a>
+		<a href="/about">About</a>
+		</div-->
+		<h1 style="color:#000; font-family:'Trebuchet MS',Trebuchet,Calibri,Tahoma,Arial,sans-serif;">The Dialogues of Monte and Mortimer</h1>
+		</div>
+		
+		<div class="body">
+		
+		<div class="nav">
+		<a href="{{first}}">|&lt; First</a>
+		<a href="{{prev}}">&lt; Prev</a>
+		<a href="/random">Random</a>
+		<a href="{{next}}">Next &gt;</a>
+		<a href="{{last}}">Last &gt;|</a>
+		</div>
+		
+		
+<!--[ BEGIN CONTENT ]-->
+<div class="content-container">
+<div class="vote-buttons">
+	<a id="dialog-{{clip_id}}-upvote" title="I like this dialog (click again to undo)" class="ajax-command dialog-vote up " href="/vote/{{clip_id}}/up" rel="nofollow"> </a>
+	<div id="dialog-{{clip_id}}-score" class="dialog-score" title="current number of votes">
+		{{votes}}
+	</div>
+	<a id="dialog-{{clip_id}}-downvote" title="I don't like this dialog (click again to undo)" class="ajax-command dialog-vote down" href="/vote/{{clip_id}}/down" rel="nofollow"> </a>
+</div>
+
+<div class="vote">
+    <input type="hidden" name="_id_" value="643879">
+    <a class="vote-up-off" title="I like this dialogue">Vote up</a>
+    <span class="vote-count-post ">0</span>
+    <a class="vote-down-off" title="I don't like this dialogue">Vote down</a>
+    
+    <a class="star-off" href="#" title="This is a favorite dialogue (click again to undo)">favorite</a>
+    <div class="favoritecount"><b>0</b></div>   
+</div>
+{% autoescape false %}
+{{monkey_dialog}}
+{% endautoescape %}
+</div>
+<!--[ END CONTENT ]-->
+	
+
+		<div class="nav">
+		<a href="{{first}}">|&lt; First</a>
+		<a href="{{prev}}">&lt; Prev</a>
+		<a href="/random">Random</a>
+		<a href="{{next}}">Next &gt;</a>
+		<a href="{{last}}">Last &gt;|</a>
+		</div>
+
+		</div><!--[ .body ]-->
+		
+		<div id="disclaimer" class="footer">
+		Website created by <a href="mailto:apwest+alpha.omega.designs@gmail.com">Alpha-Omega Designs</a> &copy; 2013
+		<br>
+		Mortimer and Monte are registered trademarks of <a href="http://www.woot.com" target="_top">woot.com</a>
+		<br>
+		Content taken from woot daily digest emails - <a href="https://account.woot.com/signup">sign up here</a>
+		<br><br>
+		<strong>Disclaimer</strong>
+		<br>I am not affiliated with woot.com or its affiliates.
+		<br>I am merely a fan of Mortimer and Monte, just like you.
+		<br>By <a href="http://deals.woot.com/questions/details/e2100db3-2c0e-4217-b33d-03a6d9f3223b/are-the-conversations-of-mortimer-and-monte-in-the-woot-daily-digest-archived-any">
+		popular demand</a>, I've created an archive of the duo's dialogs.
+		</div>
+		
+	</div>
+	
+	</body>
+	
+</html>
