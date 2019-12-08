@@ -1,5 +1,5 @@
 runtime: python27
-api_version: 1
+api_version: 2
 threadsafe: yes
 
 handlers:
@@ -11,8 +11,9 @@ handlers:
   upload: favicon\.ico
 
 - url: /update
-  script: update.app
-  
+  script: main.app
+  login: admin
+
 - url: .*
   script: main.app
 

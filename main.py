@@ -9,6 +9,8 @@ import json
 import webapp2
 import jinja2
 
+import update
+
 from google.appengine.ext import db
 
 ## TODO ###################################################
@@ -37,12 +39,12 @@ NUM_CLIPS = sum([\
 def clip_path(clip_id):
     clip_id = int(clip_id)
     return "%d/%d.html" % (1 + clip_id/1000, clip_id%1000)
-    
+
 ###########################################################
 
 class Vote(db.Model):
     votes = db.IntegerProperty(required = True)
-    
+
     @staticmethod
     def parent_key(clip_id):
         return db.Key.from_path('clip', clip_id)
@@ -58,11 +60,11 @@ class Vote(db.Model):
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
-        
+
     def render_str(self, template, **params):
         t = jinja_env.get_template(template)
         return t.render(params)
-        
+
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
@@ -70,13 +72,13 @@ class MainHandler(Handler):
     def get(self):
         clip_id = str(NUM_CLIPS)
         html = self.render_str(clip_path(clip_id))
-        
+
         votes = 0
         v = Vote.by_clip(clip_id)
         if v:
             votes = v.votes
-            
-        self.render('front.html', 
+
+        self.render('front.html',
             clip_id=clip_id,
             votes=votes,
             monkey_dialog=html,
@@ -88,13 +90,13 @@ class MainHandler(Handler):
 class ClipHandler(Handler):
     def get(self, clip_id):
         html = self.render_str(clip_path(clip_id))
-        
+
         votes = 0
         v = Vote.by_clip(clip_id)
         if v:
             votes = v.votes
-            
-        self.render('front.html', 
+
+        self.render('front.html',
             clip_id=clip_id,
             votes=votes,
             monkey_dialog=html,
@@ -107,7 +109,7 @@ class RandomHandler(Handler):
     def get(self):
         clip_id = str(random.randint(1,NUM_CLIPS))
         self.redirect('/' + clip_id)
-        
+
 class AboutHandler(Handler):
     def get(self):
         self.render('about.html')
@@ -115,12 +117,12 @@ class AboutHandler(Handler):
 class DonateHandler(Handler):
     def get(self):
         self.redirect("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L4448FFX778T6")
-        
+
 class VoteHandler(Handler):
     def get(self, clip_id, vote_type):
         data = {}
         data['success'] = True
-        
+
         if vote_type == 'up':
             adj_vote = 1
         elif vote_type == 'down':
@@ -128,28 +130,37 @@ class VoteHandler(Handler):
         else:
             data['error_message'] = "Invalid vote command"
             data['success'] = False
-        
+
         if data['success'] == True:
             data['commands'] = {
                 'update_post_score': [clip_id, adj_vote],
                 'update_user_post_vote': [clip_id, vote_type]
                 }
-            
+
             v = Vote.by_clip(clip_id)
             if not v:
                 v = Vote(key_name=clip_id, votes=adj_vote, parent=Vote.parent_key(clip_id))
             else:
                 v.votes += adj_vote
             v.put()
-        
+
         self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
         self.write(json.dumps(data))
-        
+
+class UpdateHandler(webapp2.RequestHandler):
+    def get(self):
+        update.main()
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps({"status": "200"}))
+
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/(\d+)', ClipHandler),
     ('/random', RandomHandler),
     ('/about', AboutHandler),
     ('/donate', DonateHandler),
-    ('/vote/(\d+)/([a-z]+)', VoteHandler)
+    ('/vote/(\d+)/([a-z]+)', VoteHandler),
+    ('/update', UpdateHandler)
 ], debug=True)
