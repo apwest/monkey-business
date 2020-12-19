@@ -1,24 +1,22 @@
-runtime: python27
-api_version: 2
-threadsafe: yes
+runtime: python37
 
-handlers:
-- url: /static
-  static_dir: static
-
-- url: /favicon\.ico
-  static_files: favicon.ico
-  upload: favicon\.ico
-
-- url: /update
-  script: main.app
-  login: admin
-
-- url: .*
-  script: main.app
-
-libraries:
-- name: webapp2
-  version: "2.5.2"
-- name: jinja2
-  version: latest
+# handlers:
+# - url: /static
+#   static_dir: static
+#
+# - url: /favicon\.ico
+#   static_files: favicon.ico
+#   upload: favicon\.ico
+#
+# - url: /update
+#   script: main.app
+#   login: admin
+#
+# - url: .*
+#   script: main.app
+#
+# libraries:
+# - name: webapp2
+#   version: "2.5.2"
+# - name: jinja2
+#   version: latest

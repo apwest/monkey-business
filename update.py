@@ -1,4 +1,4 @@
-from __future__ import print_function
+# from __future__ import print_function
 import pickle
 import os
 import re
@@ -55,12 +55,15 @@ def ModifyMessage(service, user_id, msg_id, remove_labels=[], add_labels=[]):
 
         print("Message ID: %s - With Label IDs %s" % (msg_id, label_ids))
         return message
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         print("An error occurred: %s" % error)
 
 
 def MarkAsRead(service, user_id, msg_id):
-    return ModifyMessage(service, user_id, msg_id, remove_labels=['INBOX'])
+    return ModifyMessage(service, user_id, msg_id, remove_labels=[
+            # 'INBOX',
+            'UNREAD'
+            ])
 
 
 def GetMessage(service, user_id, msg_id):
@@ -79,7 +82,7 @@ def GetMessage(service, user_id, msg_id):
         message = service.users().messages().get(userId=user_id, id=msg_id).execute()
         # print('Message snippet: %s' % message['snippet'])
         return message
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         print('An error occurred: %s' % error)
 
 
@@ -103,10 +106,10 @@ def GetMimeMessage(service, user_id, msg_id):
 
         msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
 
-        mime_msg = email.message_from_string(msg_str)
+        mime_msg = email.message_from_bytes(msg_str)
 
         return mime_msg
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         print('An error occurred: %s' % error)
 
 
@@ -140,7 +143,7 @@ def ListMessagesMatchingQuery(service, user_id, query=''):
 
         return messages
 
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         print('An error occurred: %s' % error)
 
 
@@ -174,7 +177,7 @@ def ListMessagesWithLabels(service, user_id, label_ids=[]):
 
         return messages
 
-    except errors.HttpError, error:
+    except errors.HttpError as error:
         print('An error occurred: %s' % error)
 
 
@@ -215,7 +218,7 @@ def ParseWootMessage(message, path, i):
             continue
 
         try:
-            txt = part.get_payload(decode=True)
+            txt = part.get_payload(decode=True).decode('utf-8')
         except:
             continue
 
@@ -260,17 +263,14 @@ def ParseWootMessage(message, path, i):
                     print ("ERROR: File already exists! (%s)" % file)
                     exit (1)
                 print ("-- writing %d bytes to %s" % (len(html), file))
-                # f = open(file,"w")
-                # f.write(html)
-                # f.close()
+                f = open(file,"w")
+                f.write(html)
+                f.close()
                 return True
     return False
 
 
-def main():
-    """Shows basic usage of the Gmail API.
-    Lists the user's Gmail labels.
-    """
+def authenticate():
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -289,6 +289,16 @@ def main():
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
+    return creds
+
+
+def main():
+    """Shows basic usage of the Gmail API.
+    Lists the user's Gmail labels.
+    """
+    creds = authenticate()
+    if not creds:
+        return (False, "Invalid credentials")
 
     service = build('gmail', 'v1', credentials=creds)
 
@@ -313,6 +323,8 @@ def main():
         if (ParseWootMessage(msg, path, n)):
             n += 1
         # break
+
+    return (True, f"Processed {len(messages)} emails")
 
 if __name__ == '__main__':
     main()
