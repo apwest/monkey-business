@@ -9,7 +9,7 @@ import jinja2
 from google.cloud import datastore
 from flask import Flask, redirect, request, url_for
 
-import update
+# import update
 
 app = Flask(__name__)
 
@@ -75,6 +75,10 @@ def votes(clip_id):
 def MainHandler():
     clip_id = str(NUM_CLIPS)
     return render_front(clip_id)
+
+# @app.route('/robots.txt')
+# def RobotHandler():
+#     return "\n".join(["User-agent: *","Allow: /"])
 
 @app.route('/<clip_id>')
 def ClipHandler(clip_id):
