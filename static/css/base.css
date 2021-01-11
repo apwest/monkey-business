@@ -1,0 +1,207 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+table {
+    margin: 20px auto;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 0;
+    width: 800px;
+    background-color: white;
+}
+
+.header {
+    text-align: center;
+}
+
+.header h1 {
+    color: #000;
+    font-family: 'Trebuchet MS', Trebuchet, Calibri, Tahoma, Arial, sans-serif;
+}
+
+.header .nav {
+    background-color: #f1f1f1;
+    margin: 0 auto 0 auto;
+    padding: 12px 6px 6px 6px;
+    position: relative;
+    top: -6px;
+    width: 620px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.header .nav a {
+    padding: 0 10px;
+}
+
+.body {
+    margin: 40px 0 40px 0;
+}
+
+.body .nav {
+    margin: 10px;
+    text-align: center;
+}
+
+.body .nav a {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    padding: 0 10px;
+    background-color: #eee;
+    border: 1px solid #999;
+    color: #222;
+}
+
+.body .nav a:hover {
+    background-color: #aaa;
+    color: #000;
+}
+
+.content {
+    margin: 0 auto;
+    xpadding-top: 10px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    width: 620px;
+}
+
+.details {
+    font-family: 'Trebuchet MS', Trebuchet, Calibri, Tahoma, Arial, sans-serif;
+    font-size: 10pt;
+    xbackground-color: #f8f8f8;
+    color: #ccc;
+    margin: 10px auto 10px auto;
+    padding: 0;
+    width: 632px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.details span {
+    color: #bbb;
+}
+
+.footer {
+    font-family: 'Trebuchet MS', Trebuchet, Calibri, Tahoma, Arial, sans-serif;
+    font-size: 8pt;
+    color: #ccc;
+    text-align: center;
+}
+
+.footer a {
+    color: #aaa;
+}
+
+.content-container {
+    border: 0;
+}
+
+/* stackoverflow style */
+.vote {
+    display: none;
+    float: left;
+    margin-top: 32px;
+    font-family: Arial;
+}
+
+.vote-up-off, .vote-down-off, .star-off {
+    text-indent: -9999em;
+    font-size: 1px;
+    background-position: 0px -265px;
+    display: block;
+    margin: 0 auto;
+    width: 41px;
+    height: 25px;
+    background-image: url('http://cdn.sstatic.net/stackoverflow/img/sprites.png?v=6');
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.vote-down-off {
+    background-position: 0px -300px;
+}
+
+.vote-count-post {
+    display: block;
+    font-size: 24px;
+    color: #555;
+}
+
+.star-off, .star-on {
+    background-position: 0px -150px;
+    width: 33px;
+    height: 31px;
+}
+
+.favoritecount {
+    text-align: center;
+    color: #808185;
+}
+
+/* udacity style */
+.vote-buttons {
+    display: none;
+    float: left;
+    margin-top: 25px;
+    margin-left: 40px;
+    font-family: Arial;
+    text-align: center;
+}
+
+a.dialog-vote {
+    background-image: url('https://web.archive.org/web/20121202103224/http://forums.udacity.com/m/default/media/images/sprite.png');
+    display: block;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+a.dialog-vote.up {
+    background-position: left -70px;
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+a.dialog-vote.up.on, a.dialog-vote.up:hover {
+    background-position: left -94px;
+}
+
+a.dialog-vote.down {
+    background-position: left -118px;
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    margin-top: 5px;
+}
+
+a.dialog-vote.down.on, a.dialog-vote.down:hover {
+    background-position: left -142px;
+}
+
+.dialog-score {
+    color: #777;
+    font-family: Karla;
+    font-size: 165%;
+    font-weight: bold;
+    padding: 0 0 3px;
+}

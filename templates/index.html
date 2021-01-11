@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="The dialogs of the Woot monkeys, Monte and Mortimer.">
+  <meta name="author" content="">
+
+  <title>The Woot Monkeys: Monte and Mortimer</title>
+
+  <!-- Bootstrap core CSS -->
+  <!--link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- MonkeyBusiness CSS -->
+  <link rel="stylesheet" href="/static/css/dialog.css?v=q">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Hachi+Maru+Pop&family=Love+Ya+Like+A+Sister&family=Redressed&display=swap" rel="stylesheet">
+
+  <!-- Google Adsense -->
+  <script data-ad-client="ca-pub-2398103388467935" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <header id="global-header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+      <div class="container col-6">
+        <img class="mortimer" src="https://d3rqdbvvokrlbl.cloudfront.net/lib/images/sites/header/mortimer.svg">
+        <a class="navbar-brand" href="#"><i class="brand">Monkey Business</i></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <!--li class="nav-item active">
+                <a class="nav-link" href="#">Home
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li-->
+            <!--li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+              </li-->
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="/donate">Donate</a>
+            </li> -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Donate</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="/donate" onclick="window.open(this.href); return false;" >Paypal</a>
+                <a class="dropdown-item disabled" href="/donate">Bitcoin</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="mailto:apwest+alpha.omega.designs@gmail.com">Contact</a>
+            </li>
+          </ul>
+          <!--form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form-->
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-8 text-center">
+        <h1 class="mt-5">The Dialogues of Monte and Mortimer</h1>
+        <nav class="controls nav nav-pills nav-justified">
+          <a class="nav-link active" href="{{first}}"><i class="fa fa-fast-backward"></i> <i class="d-none d-lg-inline-block">&nbspFirst</i></a>
+          <a class="nav-link active" href="{{prev}}"><i class="fa fa-step-backward"></i> <i class="d-none d-lg-inline-block">&nbspPrev</i></a>
+          <a class="nav-link active" href="/random"><i class="fa fa-question"></i><i class="d-none d-lg-inline-block">&nbspRandom</i></a>
+          <a class="nav-link active" href="{{next}}"><i class="d-none d-lg-inline-block">Next&nbsp</i><i class="fa fa-step-forward"></i></a>
+          <a class="nav-link active" href="{{last}}"><i class="d-none d-lg-inline-block">Last&nbsp</i><i class="fa fa-fast-forward"></i></a>
+        </nav>
+        <div id="dialog" class="text-center">
+          {% autoescape false %}
+          {{monkey_dialog}}
+          {% endautoescape %}
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+
+    <div id="footer" class="row">
+      <div class="col"></div>
+      <div class="col-8">
+        <p>
+          Website created by <a href="mailto:apwest+alpha.omega.designs@gmail.com">Alpha-Omega Designs</a> &copy; 2021<br />
+          Mortimer and Monte are registered trademarks of <a href="http://www.woot.com" target="_top">woot.com</a><br />
+          Content taken from woot daily digest emails - <a href="https://account.woot.com/signup">sign up here</a>
+        </p>
+        <p>
+          <strong>Disclaimer</strong><br />
+          I am not affiliated with woot.com or its affiliates.<br />
+          I am merely a fan of Mortimer and Monte, just like you.<br />
+          By <a href="http://deals.woot.com/questions/details/e2100db3-2c0e-4217-b33d-03a6d9f3223b/are-the-conversations-of-mortimer-and-monte-in-the-woot-daily-digest-archived-any">
+            popular demand</a>, I've created an archive of the duo's dialogs.
+        </p>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <!--script src="vendor/jquery/jquery.slim.min.js"></script-->
+  <!--script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script-->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+  <!-- Voting JavaScript -->
+  <!--script src="/static/js/ajax.js"></script-->
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-40812082-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <!-- End Google Analytics -->
+
+</body>
+
+</html>

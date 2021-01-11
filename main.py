@@ -52,7 +52,7 @@ def render(template, **params):
 
 def render_front(clip_id):
     dialog = render(clip_path(clip_id))
-    return render('front.html',
+    return render('index.html',
         clip_id=clip_id,
         votes=0, #votes(clip_id),
         monkey_dialog=dialog,
@@ -80,7 +80,7 @@ def MainHandler():
 # def RobotHandler():
 #     return "\n".join(["User-agent: *","Allow: /"])
 
-@app.route('/<clip_id>')
+@app.route('/<int:clip_id>')
 def ClipHandler(clip_id):
     return render_front(clip_id)
 
@@ -90,11 +90,11 @@ def RandomHandler():
     return redirect(url_for('ClipHandler', clip_id=rand_id))
 
 @app.route('/about')
-def AboutHandler(Handler):
+def AboutHandler():
     return render('about.html')
 
 @app.route('/donate')
-def DonateHandler(Handler):
+def DonateHandler():
     return redirect("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L4448FFX778T6")
 
 @app.route('/vote/<clip_id>/<vote_type>')
@@ -139,6 +139,10 @@ def UpdateHandler():
         ret, msg = update.main()
     resp = flask.make_response(msg, 200 if ret else 500)
     return resp
+
+@app.route('/favicon.ico')
+def FaviconHandler():
+    return url_for("static", filename="favicon.ico")
 
 ###########################################################
 

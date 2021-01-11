@@ -1,0 +1,56 @@
+#global-header .mortimer {
+    left: 0;
+    position: relative;
+    top: 3px;
+    width: 90px;
+    margin-bottom: -46px;
+}
+
+.brand {
+    /* font-family: 'Hachi Maru Pop', cursive; */
+    /* font-family: 'Berkshire Swash', cursive; */
+    font-family: 'Love Ya Like A Sister', cursive;
+    font-size: 2.0rem;
+}
+.brand span {
+    font-family: 'Redressed', cursive;
+}
+
+#dialog {
+    margin: 20px auto;
+}
+
+#dialog table {
+    margin: 20px auto;
+    border-collapse: inherit;
+}
+
+#dialog table p {
+    text-align: left;
+}
+
+#dialog .details {
+    font-size: 10pt;
+    color: #ccc;
+}
+
+.nav>a {
+    margin: auto 5px;
+    padding: 5px;
+}
+
+#footer p {
+    font-size: 8pt;
+    color: #ccc;
+    text-align: center;
+}
+
+#footer a {
+    color: #aaa;
+}
+
+@include media-breakpoint-down(md) {
+  h1 {
+    font-size: 0.75rem;
+  }
+}
