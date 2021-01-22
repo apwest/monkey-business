@@ -18,102 +18,11 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <!-- MonkeyBusiness CSS -->
-  <link rel="stylesheet" href="/static/css/dialog.css?v=q">
+  <link rel="stylesheet" href="/static/css/dialog.css?n={{nonce}}">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Hachi+Maru+Pop&family=Love+Ya+Like+A+Sister&family=Redressed&display=swap" rel="stylesheet">
-
-  <!-- Google Adsense -->
-  <script data-ad-client="ca-pub-2398103388467935" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-
-</head>
-
-<body>
-
-  <!-- Navigation -->
-  <header id="global-header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-      <div class="container col-6">
-        <img class="mortimer" src="https://d3rqdbvvokrlbl.cloudfront.net/lib/images/sites/header/mortimer.svg">
-        <a class="navbar-brand" href="#"><i class="brand">Monkey Business</i></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <!--li class="nav-item active">
-                <a class="nav-link" href="#">Home
-                  <span class="sr-only">(current)</span>
-                </a>
-              </li-->
-            <!--li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-              </li-->
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="/donate">Donate</a>
-            </li> -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Donate</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="/donate" onclick="window.open(this.href); return false;" >Paypal</a>
-                <a class="dropdown-item disabled" href="/donate">Bitcoin</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="mailto:apwest+alpha.omega.designs@gmail.com">Contact</a>
-            </li>
-          </ul>
-          <!--form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form-->
-        </div>
-      </div>
-    </nav>
-  </header>
-
-  <!-- Page Content -->
-  <div class="container">
-    <div class="row">
-      <div class="col"></div>
-      <div class="col-8 text-center">
-        <h1 class="mt-5">The Dialogues of Monte and Mortimer</h1>
-        <nav class="controls nav nav-pills nav-justified">
-          <a class="nav-link active" href="{{first}}"><i class="fa fa-fast-backward"></i> <i class="d-none d-lg-inline-block">&nbspFirst</i></a>
-          <a class="nav-link active" href="{{prev}}"><i class="fa fa-step-backward"></i> <i class="d-none d-lg-inline-block">&nbspPrev</i></a>
-          <a class="nav-link active" href="/random"><i class="fa fa-question"></i><i class="d-none d-lg-inline-block">&nbspRandom</i></a>
-          <a class="nav-link active" href="{{next}}"><i class="d-none d-lg-inline-block">Next&nbsp</i><i class="fa fa-step-forward"></i></a>
-          <a class="nav-link active" href="{{last}}"><i class="d-none d-lg-inline-block">Last&nbsp</i><i class="fa fa-fast-forward"></i></a>
-        </nav>
-        <div id="dialog" class="text-center">
-          {% autoescape false %}
-          {{monkey_dialog}}
-          {% endautoescape %}
-        </div>
-      </div>
-      <div class="col"></div>
-    </div>
-
-    <div id="footer" class="row">
-      <div class="col"></div>
-      <div class="col-8">
-        <p>
-          Website created by <a href="mailto:apwest+alpha.omega.designs@gmail.com">Alpha-Omega Designs</a> &copy; 2021<br />
-          Mortimer and Monte are registered trademarks of <a href="http://www.woot.com" target="_top">woot.com</a><br />
-          Content taken from woot daily digest emails - <a href="https://account.woot.com/signup">sign up here</a>
-        </p>
-        <p>
-          <strong>Disclaimer</strong><br />
-          I am not affiliated with woot.com or its affiliates.<br />
-          I am merely a fan of Mortimer and Monte, just like you.<br />
-          By <a href="http://deals.woot.com/questions/details/e2100db3-2c0e-4217-b33d-03a6d9f3223b/are-the-conversations-of-mortimer-and-monte-in-the-woot-daily-digest-archived-any">
-            popular demand</a>, I've created an archive of the duo's dialogs.
-        </p>
-      </div>
-      <div class="col"></div>
-    </div>
-  </div>
 
   <!-- Bootstrap core JavaScript -->
   <!--script src="vendor/jquery/jquery.slim.min.js"></script-->
@@ -123,6 +32,22 @@
 
   <!-- Voting JavaScript -->
   <!--script src="/static/js/ajax.js"></script-->
+
+  <!-- Google Adsense -->
+  <!-- <script data-ad-client="ca-pub-2398103388467935" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D1SPDHSXTE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-D1SPDHSXTE');
+  </script>
 
   <!-- Google Analytics -->
   <script>
@@ -142,6 +67,133 @@
     ga('send', 'pageview');
   </script>
   <!-- End Google Analytics -->
+
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <img class="mortimer d-none d-sm-block" src="https://d3rqdbvvokrlbl.cloudfront.net/lib/images/sites/header/mortimer.svg">
+      <a class="navbar-brand" href="https://monkey-business.appspot.com"><i class="brand">Monkey Business</i></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav mr-auto">
+          <!--li class="nav-item active">
+                <a class="nav-link" href="#">Home
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li-->
+          <!--li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+              </li-->
+          <!-- <li class="nav-item">
+              <a class="nav-link" href="/donate">Donate</a>
+            </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Donate</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/donate" onclick="window.open(this.href); return false;"><i class="fa fa-paypal" style="margin-right:5px;"></i>Paypal</a>
+              <a class="dropdown-item disabled" href="/donate"><i class="fa fa-bitcoin" style="margin-right:5px;"></i>Bitcoin</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="mailto:apwest+alpha.omega.designs@gmail.com">Contact</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="/search" method="POST">
+          <div class="input-group">
+            <input class="form-control" type="search" placeholder="Search" name="query">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="flex-fill">
+    <div class="container">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-sm-8 text-center">
+          <h3 class="mt-5">The Dialogues of Monte and Mortimer</h2>
+            <nav class="controls nav nav-pills nav-justified">
+              <a class="nav-link active" href="{{first}}"><i class="fa fa-fast-backward"></i> <i class="d-none d-lg-inline-block">&nbspFirst</i></a>
+              <a class="nav-link active" href="{{prev}}"><i class="fa fa-step-backward"></i> <i class="d-none d-lg-inline-block">&nbspPrev</i></a>
+              <a class="nav-link active" href="/random"><i class="fa fa-question"></i><i class="d-none d-lg-inline-block">&nbspRandom</i></a>
+              <a class="nav-link active" href="{{next}}"><i class="d-none d-lg-inline-block">Next&nbsp</i><i class="fa fa-step-forward"></i></a>
+              <a class="nav-link active" href="{{last}}"><i class="d-none d-lg-inline-block">Last&nbsp</i><i class="fa fa-fast-forward"></i></a>
+            </nav>
+            <div id="dialog">
+              {% autoescape false %}
+              {{monkey_dialog}}
+              {% endautoescape %}
+            </div>
+        </div>
+        <div class="col"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer mt-auto py-3">
+    <div class="container" class="text-muted">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-sm-8">
+          <small>
+            <nav class="controls nav nav-pills nav-justified">
+              <a class="nav-link active" href="{{first}}"><i class="fa fa-fast-backward"></i></a>
+              <a class="nav-link active" href="{{prev}}"><i class="fa fa-step-backward"></i></a>
+              <a class="nav-link active" href="/random"><i class="fa fa-question"></i></a>
+              <a class="nav-link active" href="{{next}}"><i class="fa fa-step-forward"></i></a>
+              <a class="nav-link active" href="{{last}}"><i class="fa fa-fast-forward"></i></a>
+            </nav>
+          </small>
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="row border-top border-bottom my-3 pt-2">
+        <div class="col-sm order-sm-0">
+          <small>
+            <ul class="nav list-unstyled text-small mt-2 mb-3">
+              <li><a class="text-muted mr-1 pr-1" href="#">Home</a></li>
+              <li><a class="text-muted mx-1 px-1" href="#">Contact</a></li>
+              <li><a class="text-muted ml-1 pl-1" href="#">Donate</a></li>
+            </ul>
+          </small>
+          <div xstyle="position:absolute; bottom:0;">
+            <small>
+              <p>Copyright &copy; Alpha-Omega Designs 2021</p>
+              <p>Website design based on <a href="https://startbootstrap.com/template/bare" target="_top">Bare template</a>
+                by <a href="https://startbootstrap.com/" target="_top">Start Bootstrap</a>
+              </p>
+            </small>
+          </div>
+        </div>
+        <div class="col-sm order-last">
+          <small>
+            <span class="text-uppercase">The Fine Print</span>
+            <p class="text-justify">
+              <a href="http://www.woot.com" target="_top">Woot.com</a> is operated by Woot Services LLC.
+              I am not associated with Woot or any of its affiliates.
+              I am merely a fan of Mortimer and Monte, just like you.
+              Mortimer and Monte are registered trademarks of Woot.
+              I've created an archive of the duo's dialogs due to
+              <a href="http://deals.woot.com/questions/details/e2100db3-2c0e-4217-b33d-03a6d9f3223b/are-the-conversations-of-mortimer-and-monte-in-the-woot-daily-digest-archived-any">popular demand</a>.
+              The content for this page has been taken from the Woot Daily Digest emails.
+              If you would like, you can <a href="https://account.woot.com/signup" target="_top">sign up here</a>.
+            </p>
+          </small>
+        </div>
+      </div>
+      <p class="text-center m-0"><small>Copyright &copy; Alpha-Omega Designs 2021</small></p>
+  </footer>
 
 </body>
 
