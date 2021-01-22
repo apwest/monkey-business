@@ -1,4 +1,6 @@
-#global-header .mortimer {
+#global-header {}
+
+.mortimer {
     left: 0;
     position: relative;
     top: 3px;
@@ -12,6 +14,7 @@
     font-family: 'Love Ya Like A Sister', cursive;
     font-size: 2.0rem;
 }
+
 .brand span {
     font-family: 'Redressed', cursive;
 }
@@ -21,13 +24,57 @@
 }
 
 #dialog table {
-    margin: 20px auto;
+    margin: 12px auto;
     border-collapse: inherit;
+    width: auto !important;
+    /* max-width: 600px; */
 }
 
 #dialog table p {
     text-align: left;
 }
+
+/*** Dialog Style 1 & 2 ***/
+
+#dialog table[style*="width:6"] td:first-child,
+#dialog table[style*="width:6"] td:last-child {
+    width: 0 !important;
+}
+
+#dialog table[style*="width:6"] td:first-child {
+    text-align: right;
+}
+
+#dialog table[style*="width:6"] td:nth-child(2) {
+    width: 300px !important;
+}
+
+/*** Dialog Style 3 ***/
+
+#dialog table td[style*="25px"],
+#dialog table td[style*="238px"] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#dialog table td[style*="238px"] p {
+    margin: 0 !important;
+    padding: 4px 12px !important;
+}
+
+#dialog table td > img[src*="mortimer"],
+#dialog table td > img[src*="monte"] {
+    margin: 4px 12px;
+}
+
+/*** Dialog Style 4 ***/
+
+
+#dialog table td[style*="260px"] {
+    width: 0 !important;
+}
+
+/******/
 
 #dialog .details {
     font-size: 10pt;
@@ -39,18 +86,77 @@
     padding: 5px;
 }
 
-#footer p {
+.footer {
+    background-color: #f1f1f1;
+    color: #ccc;
+}
+
+.footer a {
+    color: #aaa;
+}
+
+/* .footer p {
     font-size: 8pt;
     color: #ccc;
     text-align: center;
 }
 
-#footer a {
+.footer a {
     color: #aaa;
+} */
+.details {
+    /* background-color: yellow; */
+    margin: 1rem 0;
 }
 
-@include media-breakpoint-down(md) {
-  h1 {
-    font-size: 0.75rem;
-  }
+/* Small devices (landscape phones, 576px and up/down) */
+/* @include media-breakpoint-up(sm) { */
+@xmedia (min-width: 576px) {
+    #dialog td:first-child, #dialog td:last-child {
+        width: 0 !important;
+    }
+
+    #dialog td:first-child {
+        text-align: right;
+    }
+
+    #dialog td:nth-child(2) {
+        width: 300px !important;
+    }
 }
+
+/* Medium devices (tablets, 768px and up/down) */
+/* @include media-breakpoint-up(md) { */
+@xmedia (min-width: 768px) {
+    #dialog td:first-child, #dialog td:last-child {
+        width: 75px !important;
+    }
+
+    #dialog td:first-child {
+        text-align: right;
+    }
+
+    #dialog td:nth-child(2) {
+        width: 300px !important;
+    }
+}
+
+/* Large devices (desktops, 992px and up/down) */
+/* @include media-breakpoint-up(lg) { */
+@xmedia (min-width: 992px) {
+    #dialog td:first-child, #dialog td:last-child {
+        width: 100px !important;
+    }
+
+    #dialog td:first-child {
+        text-align: right;
+    }
+
+    #dialog td:nth-child(2) {
+        width: 400px !important;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+/* @include media-breakpoint-up(xl) { */
+@media (min-width: 1200px) {}
