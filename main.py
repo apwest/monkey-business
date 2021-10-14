@@ -166,9 +166,16 @@ def RandomHandler():
 def AboutHandler():
     return render('about.html')
 
-@app.route('/donate')
-def DonateHandler():
-    return redirect("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L4448FFX778T6")
+@app.route('/donate/<source>')
+def DonateHandler(source):
+    if source == 'paypal':
+        return redirect("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L4448FFX778T6")
+    elif source == 'coinbase':
+        return redirect("https://commerce.coinbase.com/checkout/0f25ac20-758b-47fe-bab4-ba6da3eb1107")
+
+@app.route('/contact')
+def ContactHandler():
+    return redirect("mailto:apwest+alpha.omega.designs@gmail.com")
 
 @app.route('/vote/<clip_id>/<vote_type>')
 def VoteHandler(clip_id, vote_type):
