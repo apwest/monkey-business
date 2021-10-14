@@ -37,16 +37,13 @@
   <!-- <script data-ad-client="ca-pub-2398103388467935" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D1SPDHSXTE"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPJVZ6HJSP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+    function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-D1SPDHSXTE');
+    gtag('config', 'G-WPJVZ6HJSP');
   </script>
 
   <!-- Google Analytics -->
@@ -96,12 +93,12 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Donate</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/donate" onclick="window.open(this.href); return false;"><i class="fa fa-paypal" style="margin-right:5px;"></i>Paypal</a>
-              <a class="dropdown-item disabled" href="/donate"><i class="fa fa-bitcoin" style="margin-right:5px;"></i>Bitcoin</a>
+              <a class="dropdown-item" href="/donate/paypal" onclick="window.open(this.href); return false;"><i class="fa fa-paypal" style="margin-right:5px;"></i>Paypal</a>
+              <a class="dropdown-item" href="/donate/coinbase" onclick="window.open(this.href); return false;"><i class="fa fa-bitcoin" style="margin-right:5px;"></i>Bitcoin</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="mailto:apwest+alpha.omega.designs@gmail.com">Contact</a>
+            <a class="nav-link" href="/contact">Contact</a>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0" action="/search" method="POST">
@@ -162,9 +159,10 @@
         <div class="col-sm order-sm-0">
           <small>
             <ul class="nav list-unstyled text-small mt-2 mb-3">
-              <li><a class="text-muted mr-1 pr-1" href="#">Home</a></li>
-              <li><a class="text-muted mx-1 px-1" href="#">Contact</a></li>
-              <li><a class="text-muted ml-1 pl-1" href="#">Donate</a></li>
+              <li><a class="text-muted mr-1 pr-1" href="/">Home</a></li>
+              <li><a class="text-muted mx-1 px-1" href="/contact">Contact</a></li>
+              <li><a class="text-muted mx-1 px-1" href="/donate/paypal" onclick="window.open(this.href); return false;"><i class="fa fa-paypal"></i></a></li>
+              <li><a class="text-muted ml-1 pl-1" href="/donate/coinbase" onclick="window.open(this.href); return false;"><i class="fa fa-bitcoin"></i></a></li>
             </ul>
           </small>
           <div xstyle="position:absolute; bottom:0;">
