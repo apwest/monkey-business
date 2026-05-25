@@ -11,28 +11,28 @@
   </header>
 
   <nav class="clip-nav" aria-label="clip navigation">
-    <a href="/{{ first }}/" title="First">&#x23ee;</a>
-    <a href="/{{ prev }}/" title="Previous">&#x25c0;</a>
-    <a href="/random/" title="Random">&#x1f3b2;</a>
-    <a href="/{{ next }}/" title="Next">&#x25b6;</a>
-    <a href="/{{ last }}/" title="Last">&#x23ed;</a>
+    <a href="{{ base_path }}/{{ first }}/" title="First">&#x23ee;</a>
+    <a href="{{ base_path }}/{{ prev }}/" title="Previous">&#x25c0;</a>
+    <a href="{{ base_path }}/random/" title="Random">&#x1f3b2;</a>
+    <a href="{{ base_path }}/{{ next }}/" title="Next">&#x25b6;</a>
+    <a href="{{ base_path }}/{{ last }}/" title="Last">&#x23ed;</a>
   </nav>
 
   <ol class="dialogue" reversed-aria-hidden>
     {% for line in clip.lines %}
     <li class="line {{ line.speaker }}">
-      <img class="avatar" src="/static/img/{{ mortimer_img if line.speaker == 'mortimer' else monte_img }}" alt="{{ line.speaker|capitalize }}" loading="lazy">
+      <img class="avatar" src="{{ base_path }}/static/img/{{ mortimer_img if line.speaker == 'mortimer' else monte_img }}" alt="{{ line.speaker|capitalize }}" loading="lazy">
       <p class="bubble">{{ line.text }}</p>
     </li>
     {% endfor %}
   </ol>
 
   <nav class="clip-nav clip-nav-bottom" aria-label="clip navigation">
-    <a href="/{{ first }}/">&#x23ee; First</a>
-    <a href="/{{ prev }}/">&#x25c0; Prev</a>
-    <a href="/random/">&#x1f3b2; Random</a>
-    <a href="/{{ next }}/">Next &#x25b6;</a>
-    <a href="/{{ last }}/">Last &#x23ed;</a>
+    <a href="{{ base_path }}/{{ first }}/">&#x23ee; First</a>
+    <a href="{{ base_path }}/{{ prev }}/">&#x25c0; Prev</a>
+    <a href="{{ base_path }}/random/">&#x1f3b2; Random</a>
+    <a href="{{ base_path }}/{{ next }}/">Next &#x25b6;</a>
+    <a href="{{ base_path }}/{{ last }}/">Last &#x23ed;</a>
   </nav>
 </article>
 {% endblock %}

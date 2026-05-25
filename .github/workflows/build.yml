@@ -27,13 +27,15 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - run: python build.py
+      - id: pages
+        uses: actions/configure-pages@v5
 
-      - uses: actions/configure-pages@v5
+      - run: python build.py --base-path "${{ steps.pages.outputs.base_path }}"
 
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
 
   deploy:
     needs: build
