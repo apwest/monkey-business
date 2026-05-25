@@ -58,6 +58,41 @@ a { color: inherit; }
 }
 .site-nav a:hover { color: white; }
 
+.donate-menu {
+  position: relative;
+}
+.donate-menu summary {
+  color: #d6d6d6;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.95rem;
+}
+.donate-menu summary::-webkit-details-marker { display: none; }
+.donate-menu summary::marker { content: ""; }
+.donate-menu summary:hover,
+.donate-menu[open] summary { color: white; }
+.donate-options {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  min-width: 8rem;
+  padding: 0.25rem 0;
+  z-index: 10;
+}
+.donate-options a {
+  padding: 0.5rem 0.9rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.donate-options a:hover { background: #ececea; color: var(--text); }
+
 /* ---------- Main / clip layout ---------- */
 main {
   flex: 1 1 auto;
