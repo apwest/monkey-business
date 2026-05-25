@@ -154,6 +154,74 @@ main {
   border-bottom-right-radius: 4px;
 }
 
+/* ---------- Static pages (search, random) ---------- */
+.static-page h1 {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin: 0.5rem 0 1.25rem;
+  color: #444;
+}
+.search-form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.search-form input[type="search"] {
+  width: 100%;
+  max-width: 480px;
+  padding: 0.6rem 0.85rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+}
+.search-form input[type="search"]:focus {
+  outline: none;
+  border-color: var(--monte);
+  box-shadow: 0 0 0 3px var(--monte-soft);
+}
+.search-status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 1rem;
+}
+.search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.search-result a {
+  display: block;
+  padding: 0.7rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.12s;
+}
+.search-result a:hover { background: #ececea; }
+.result-meta {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.result-snippet { display: block; font-size: 0.95rem; line-height: 1.4; }
+.result-snippet mark {
+  background: #fff3a3;
+  color: inherit;
+  padding: 0 0.1em;
+  border-radius: 2px;
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   text-align: center;

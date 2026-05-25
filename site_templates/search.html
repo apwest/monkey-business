@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Search &mdash; The Woot Monkeys{% endblock %}
+{% block content %}
+<article class="static-page search-page">
+  <h1>Search the dialogues</h1>
+  <form class="search-form" onsubmit="return false;">
+    <input id="q" type="search" autofocus placeholder="Search 4,000+ clips&hellip;" autocomplete="off" spellcheck="false">
+  </form>
+  <p id="search-status" class="search-status">Loading index&hellip;</p>
+  <ol id="results" class="search-results"></ol>
+  <noscript><p>Search needs JavaScript.</p></noscript>
+</article>
+<script>
+  (function () {
+    var MAX_RESULTS = 50;
+    var SNIPPET_RADIUS = 60;
+    var q = document.getElementById('q');
+    var status = document.getElementById('search-status');
+    var results = document.getElementById('results');
+    var clips = null;
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function snippet(text, queryLower) {
+      var lower = text.toLowerCase();
+      var idx = lower.indexOf(queryLower);
+      if (idx < 0) return escapeHtml(text.slice(0, SNIPPET_RADIUS * 2));
+      var start = Math.max(0, idx - SNIPPET_RADIUS);
+      var end = Math.min(text.length, idx + queryLower.length + SNIPPET_RADIUS);
+      var before = (start > 0 ? '&hellip;' : '') + escapeHtml(text.slice(start, idx));
+      var match = '<mark>' + escapeHtml(text.slice(idx, idx + queryLower.length)) + '</mark>';
+      var after = escapeHtml(text.slice(idx + queryLower.length, end)) + (end < text.length ? '&hellip;' : '');
+      return before + match + after;
+    }
+
+    function render(query) {
+      results.innerHTML = '';
+      if (!query) {
+        status.textContent = 'Type a word or phrase to search.';
+        return;
+      }
+      var queryLower = query.toLowerCase();
+      var hits = [];
+      for (var i = 0; i < clips.length; i++) {
+        var c = clips[i];
+        if (c.text.toLowerCase().indexOf(queryLower) >= 0) {
+          hits.push(c);
+          if (hits.length >= MAX_RESULTS) break;
+        }
+      }
+      if (hits.length === 0) {
+        status.textContent = 'No matches.';
+        return;
+      }
+      var capped = hits.length >= MAX_RESULTS;
+      status.textContent = capped
+        ? 'Showing first ' + MAX_RESULTS + ' matches.'
+        : 'Found ' + hits.length + ' match' + (hits.length === 1 ? '' : 'es') + '.';
+      var html = '';
+      for (var j = 0; j < hits.length; j++) {
+        var h = hits[j];
+        html += '<li class="search-result">' +
+          '<a href="/' + h.id + '/">' +
+          '<span class="result-meta">#' + h.id + (h.date ? ' &middot; ' + escapeHtml(h.date) : '') + '</span>' +
+          '<span class="result-snippet">' + snippet(h.text, queryLower) + '</span>' +
+          '</a></li>';
+      }
+      results.innerHTML = html;
+    }
+
+    fetch('/clips_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        clips = data;
+        status.textContent = 'Type a word or phrase to search.';
+        if (q.value) render(q.value);
+      })
+      .catch(function () {
+        status.textContent = "Couldn't load the clip index. Try refreshing.";
+      });
+
+    q.addEventListener('input', function () {
+      if (clips) render(q.value.trim());
+    });
+  })();
+</script>
+{% endblock %}

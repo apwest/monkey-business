@@ -57,10 +57,12 @@ def build():
     id_index = {cid: i for i, cid in enumerate(ids)}
 
     env = Environment(
-        loader=FileSystemLoader(TEMPLATES_DIR),
+        loader=FileSystemLoader(str(TEMPLATES_DIR)),
         autoescape=select_autoescape(["html"]),
     )
     clip_tpl = env.get_template("clip.html")
+    search_tpl = env.get_template("search.html")
+    random_tpl = env.get_template("random.html")
 
     if DIST.exists():
         shutil.rmtree(DIST)
@@ -69,6 +71,24 @@ def build():
 
     # GH Pages: skip Jekyll processing.
     (DIST / ".nojekyll").touch()
+
+    index_entries = [
+        {
+            "id": c["id"],
+            "date": c.get("date", ""),
+            "text": " ".join(line["text"] for line in c["lines"]),
+        }
+        for c in clips
+    ]
+    (DIST / "clips_index.json").write_text(
+        json.dumps(index_entries, separators=(",", ":"), ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    for name, tpl in (("search", search_tpl), ("random", random_tpl)):
+        page_dir = DIST / name
+        page_dir.mkdir()
+        (page_dir / "index.html").write_text(tpl.render(), encoding="utf-8")
 
     for clip in clips:
         clip["date_display"] = display_date(clip["date"])
