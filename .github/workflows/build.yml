@@ -4,6 +4,12 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+  # Pushes made by GITHUB_TOKEN (e.g. the scrape workflow's bot commits)
+  # don't fire the `push` trigger, so we chain off scrape.yml's completion.
+  workflow_run:
+    workflows: ["Scrape new clips"]
+    types: [completed]
+    branches: [master]
 
 permissions:
   contents: read
@@ -17,6 +23,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Skip the chained run if scrape.yml failed.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
 
