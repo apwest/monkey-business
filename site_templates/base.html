@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}The Woot Monkeys: Monte and Mortimer{% endblock %}</title>
   <meta name="description" content="A fan archive of the Monte and Mortimer dialogues from Woot's daily digest emails.">
-  <link rel="icon" href="/static/favicon.ico">
-  <link rel="stylesheet" href="/static/css/site.css">
+  <link rel="icon" href="{{ base_path }}/static/favicon.ico">
+  <link rel="stylesheet" href="{{ base_path }}/static/css/site.css">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&family=Redressed&display=swap" rel="stylesheet">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPJVZ6HJSP"></script>
@@ -19,11 +19,11 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/">Monkey Business</a>
+    <a class="brand" href="{{ base_path }}/">Monkey Business</a>
     <nav class="site-nav">
-      <a href="/search/">Search</a>
-      <a href="/random/">Random</a>
-      <a href="/donate/paypal/" target="_blank" rel="noopener">Donate</a>
+      <a href="{{ base_path }}/search/">Search</a>
+      <a href="{{ base_path }}/random/">Random</a>
+      <a href="{{ base_path }}/donate/paypal/" target="_blank" rel="noopener">Donate</a>
     </nav>
   </header>
 

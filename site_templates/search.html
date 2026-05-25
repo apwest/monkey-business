@@ -64,7 +64,7 @@
       for (var j = 0; j < hits.length; j++) {
         var h = hits[j];
         html += '<li class="search-result">' +
-          '<a href="/' + h.id + '/">' +
+          '<a href="{{ base_path }}/' + h.id + '/">' +
           '<span class="result-meta">#' + h.id + (h.date ? ' &middot; ' + escapeHtml(h.date) : '') + '</span>' +
           '<span class="result-snippet">' + snippet(h.text, queryLower) + '</span>' +
           '</a></li>';
@@ -72,7 +72,7 @@
       results.innerHTML = html;
     }
 
-    fetch('/clips_index.json')
+    fetch('{{ base_path }}/clips_index.json')
       .then(function (r) { return r.json(); })
       .then(function (data) {
         clips = data;

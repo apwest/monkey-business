@@ -1,9 +1,12 @@
 """Static site generator. Reads data/clips.jsonl, writes dist/ ready for GitHub Pages.
 
-URL structure: each clip lives at /<id>/ (file: dist/<id>/index.html).
-GH Pages 301-redirects /<id> -> /<id>/, preserving old App Engine links.
+URL structure: each clip lives at <base>/<id>/ (file: dist/<id>/index.html).
+`<base>` is empty for root-served sites and `/monkey-business` (etc.) for
+project-page subpaths; pass with --base-path. GH Pages 301-redirects
+<base>/<id> -> <base>/<id>/, preserving old App Engine links.
 """
 
+import argparse
 import json
 import shutil
 from datetime import datetime
@@ -47,7 +50,8 @@ def display_date(iso: str) -> str:
         return iso or ""
 
 
-def build():
+def build(base_path: str = ""):
+    base_path = base_path.rstrip("/")  # "" or "/monkey-business" — never trailing slash
     clips = load_clips()
     if not clips:
         raise SystemExit("No clips found in data/clips.jsonl — run migrate.py first.")
@@ -88,7 +92,7 @@ def build():
     for name, tpl in (("search", search_tpl), ("random", random_tpl)):
         page_dir = DIST / name
         page_dir.mkdir()
-        (page_dir / "index.html").write_text(tpl.render(), encoding="utf-8")
+        (page_dir / "index.html").write_text(tpl.render(base_path=base_path), encoding="utf-8")
 
     for clip in clips:
         clip["date_display"] = display_date(clip["date"])
@@ -105,6 +109,7 @@ def build():
             last=last_id,
             mortimer_img=mortimer_img,
             monte_img=monte_img,
+            base_path=base_path,
         )
         page_dir = DIST / str(clip["id"])
         page_dir.mkdir()
@@ -119,4 +124,11 @@ def build():
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser(description="Render the static site to dist/.")
+    parser.add_argument(
+        "--base-path",
+        default="",
+        help='URL path prefix for the site (e.g. "/monkey-business" for project Pages). Empty = root-served.',
+    )
+    args = parser.parse_args()
+    build(base_path=args.base_path)

@@ -7,11 +7,11 @@
   <noscript><p>This page needs JavaScript. <a href="/">Go to the latest clip instead.</a></p></noscript>
 </article>
 <script>
-  fetch('/clips_index.json')
+  fetch('{{ base_path }}/clips_index.json')
     .then(function (r) { return r.json(); })
     .then(function (clips) {
       var c = clips[Math.floor(Math.random() * clips.length)];
-      location.replace('/' + c.id + '/');
+      location.replace('{{ base_path }}/' + c.id + '/');
     })
     .catch(function () {
       document.getElementById('random-status').textContent =
