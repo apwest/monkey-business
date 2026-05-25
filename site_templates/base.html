@@ -23,7 +23,13 @@
     <nav class="site-nav">
       <a href="{{ base_path }}/search/">Search</a>
       <a href="{{ base_path }}/random/">Random</a>
-      <a href="{{ base_path }}/donate/paypal/" target="_blank" rel="noopener">Donate</a>
+      <details class="donate-menu">
+        <summary>Donate</summary>
+        <div class="donate-options">
+          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=L4448FFX778T6" target="_blank" rel="noopener">PayPal</a>
+          <a href="https://venmo.com/u/batman99" target="_blank" rel="noopener">Venmo</a>
+        </div>
+      </details>
     </nav>
   </header>
 
