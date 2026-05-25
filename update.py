@@ -1,318 +1,220 @@
-from __future__ import print_function
-import pickle
-import os
-import re
-import time
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+"""Daily Gmail-to-clips.jsonl pipeline.
+
+Reads unread messages from the Gmail label `woot`, extracts Monte & Mortimer
+dialogue, appends new clip records to data/clips.jsonl, and marks each
+processed message as read so the next run only sees new mail.
+
+Designed to run headless from GitHub Actions. Credentials come from env vars:
+
+    GOOGLE_OAUTH_CLIENT_ID
+    GOOGLE_OAUTH_CLIENT_SECRET
+    GOOGLE_OAUTH_REFRESH_TOKEN
+
+Use bootstrap_refresh_token.py once locally to mint the refresh token.
+"""
+
+from __future__ import annotations
 
 import base64
 import email
-from apiclient import errors
+import json
+import os
+import sys
+from datetime import datetime
+from email.utils import parsedate_to_datetime
+from pathlib import Path
 
-# If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly',
-          'https://www.googleapis.com/auth/gmail.modify']
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
-#===========================================================
+from clips import TABLE_RE, build_clip_record
 
-def get_num_clips(path):
-    return len([x for x in os.listdir(path) if re.match('[0-9]+\.html', x)])
+SCOPES = [
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/gmail.modify",
+]
+TOKEN_URI = "https://oauth2.googleapis.com/token"
 
-def get_next_clip(path):
-    total_clips = 0
-    for f in os.listdir(path):
-        clips_path = os.path.join(path, f)
-        if os.path.isdir(clips_path):
-            total_clips += len([x for x in os.listdir(clips_path) if re.match('[0-9]+\.html', x)])
-    return total_clips
+ROOT = Path(__file__).parent
+JSONL_PATH = ROOT / "data" / "clips.jsonl"
 
-#===========================================================
+QUERY = "label:woot is:unread"
 
-def ModifyMessage(service, user_id, msg_id, remove_labels=[], add_labels=[]):
-    """Modify the Labels on the given Message.
+# Marker strings that indicate an email's HTML contains a Monte/Mortimer dialogue.
+# Mirrors the heuristic used by the original update.py / migrate.py parser.
+CLIP_MARKERS = ("monkey-", "monkey_", "mortimer-2.png", "monte-2.png")
 
-    Args:
-        service: Authorized Gmail API service instance.
-        user_id: User's email address. The special value "me"
-        can be used to indicate the authenticated user.
-        msg_id: The id of the message required.
-        msg_labels: The change in labels.
 
-    Returns:
-        Modified message, containing updated labelIds, id and threadId.
+def authenticate() -> Credentials:
+    """Build Credentials from env vars and refresh the access token."""
+    missing = [
+        name for name in (
+            "GOOGLE_OAUTH_CLIENT_ID",
+            "GOOGLE_OAUTH_CLIENT_SECRET",
+            "GOOGLE_OAUTH_REFRESH_TOKEN",
+        ) if not os.environ.get(name)
+    ]
+    if missing:
+        raise SystemExit(f"Missing required env vars: {', '.join(missing)}")
+
+    creds = Credentials(
+        token=None,
+        refresh_token=os.environ["GOOGLE_OAUTH_REFRESH_TOKEN"],
+        token_uri=TOKEN_URI,
+        client_id=os.environ["GOOGLE_OAUTH_CLIENT_ID"],
+        client_secret=os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
+        scopes=SCOPES,
+    )
+    creds.refresh(Request())
+    return creds
+
+
+def get_next_clip_id(path: Path) -> int:
+    """Return max(id)+1 across clips.jsonl, or 1 if the file is missing/empty."""
+    max_id = 0
+    if path.exists():
+        with path.open() as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(rec.get("id"), int):
+                    max_id = max(max_id, rec["id"])
+    return max_id + 1
+
+
+def list_unread_woot_messages(service) -> list[dict]:
+    """List unread messages matching the woot label, paginating through all results."""
+    messages: list[dict] = []
+    page_token = None
+    while True:
+        response = service.users().messages().list(
+            userId="me", q=QUERY, pageToken=page_token
+        ).execute()
+        messages.extend(response.get("messages", []))
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+    return messages
+
+
+def get_mime_message(service, msg_id: str):
+    """Fetch a Gmail message as a parsed MIME object."""
+    raw_msg = service.users().messages().get(
+        userId="me", id=msg_id, format="raw"
+    ).execute()
+    raw_bytes = base64.urlsafe_b64decode(raw_msg["raw"].encode("ASCII"))
+    return email.message_from_bytes(raw_bytes)
+
+
+def mark_as_read(service, msg_id: str) -> None:
+    service.users().messages().modify(
+        userId="me", id=msg_id, body={"removeLabelIds": ["UNREAD"]}
+    ).execute()
+
+
+def extract_clip_html(mime_msg) -> str | None:
+    """Return the concatenated dialogue-table HTML from a Woot email, or None.
+
+    Walks MIME parts, finds the text part containing Monte/Mortimer, then
+    pulls out every <table>...</table> block that sits at or before a known
+    monkey-image marker, mirroring the heuristic in the legacy update.py.
     """
-    try:
-        print("user_id: {}\nmsg_id: {}".format(user_id, msg_id))
-        msg_labels = { 'removeLabelIds': remove_labels,
-                       'addLabelIds': add_labels }
-
-        message = service.users().messages().modify(
-                        userId=user_id, id=msg_id, body=msg_labels).execute()
-
-        label_ids = message['labelIds']
-
-        print("Message ID: %s - With Label IDs %s" % (msg_id, label_ids))
-        return message
-    except errors.HttpError, error:
-        print("An error occurred: %s" % error)
-
-
-def MarkAsRead(service, user_id, msg_id):
-    return ModifyMessage(service, user_id, msg_id, remove_labels=['INBOX'])
-
-
-def GetMessage(service, user_id, msg_id):
-    """Get a Message with given ID.
-
-    Args:
-        service: Authorized Gmail API service instance.
-        user_id: User's email address. The special value "me"
-        can be used to indicate the authenticated user.
-        msg_id: The ID of the Message required.
-
-    Returns:
-        A Message.
-    """
-    try:
-        message = service.users().messages().get(userId=user_id, id=msg_id).execute()
-        # print('Message snippet: %s' % message['snippet'])
-        return message
-    except errors.HttpError, error:
-        print('An error occurred: %s' % error)
-
-
-def GetMimeMessage(service, user_id, msg_id):
-    """Get a Message and use it to create a MIME Message.
-
-    Args:
-        service: Authorized Gmail API service instance.
-        user_id: User's email address. The special value "me"
-        can be used to indicate the authenticated user.
-        msg_id: The ID of the Message required.
-
-    Returns:
-        A MIME Message, consisting of data from Message.
-    """
-    try:
-        message = service.users().messages().get(userId=user_id, id=msg_id,
-                                                format='raw').execute()
-
-        # print('Message snippet: %s' % message['snippet'])
-
-        msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
-
-        mime_msg = email.message_from_string(msg_str)
-
-        return mime_msg
-    except errors.HttpError, error:
-        print('An error occurred: %s' % error)
-
-
-def ListMessagesMatchingQuery(service, user_id, query=''):
-    """List all Messages of the user's mailbox matching the query.
-
-    Args:
-        service: Authorized Gmail API service instance.
-        user_id: User's email address. The special value "me"
-        can be used to indicate the authenticated user.
-        query: String used to filter messages returned.
-        Eg.- 'from:user@some_domain.com' for Messages from a particular sender.
-
-    Returns:
-        List of Messages that match the criteria of the query. Note that the
-        returned list contains Message IDs, you must use get with the
-        appropriate ID to get the details of a Message.
-    """
-    try:
-        response = service.users().messages().list(userId=user_id,
-        q=query).execute()
-        messages = []
-        if 'messages' in response:
-            messages.extend(response['messages'])
-
-            while 'nextPageToken' in response:
-                page_token = response['nextPageToken']
-                response = service.users().messages().list(userId=user_id,
-                                q=query, pageToken=page_token).execute()
-                messages.extend(response['messages'])
-
-        return messages
-
-    except errors.HttpError, error:
-        print('An error occurred: %s' % error)
-
-
-def ListMessagesWithLabels(service, user_id, label_ids=[]):
-    """List all Messages of the user's mailbox with label_ids applied.
-
-    Args:
-        service: Authorized Gmail API service instance.
-        user_id: User's email address. The special value "me"
-        can be used to indicate the authenticated user.
-        label_ids: Only return Messages with these labelIds applied.
-
-    Returns:
-        List of Messages that have all required Labels applied. Note that the
-        returned list contains Message IDs, you must use get with the
-        appropriate id to get the details of a Message.
-    """
-    try:
-        response = service.users().messages().list(userId=user_id,
-                                                   labelIds=label_ids).execute()
-        messages = []
-        if 'messages' in response:
-            messages.extend(response['messages'])
-
-            while 'nextPageToken' in response:
-                page_token = response['nextPageToken']
-                response = service.users().messages().list(userId=user_id,
-                                labelIds=label_ids,
-                                pageToken=page_token).execute()
-                messages.extend(response['messages'])
-
-        return messages
-
-    except errors.HttpError, error:
-        print('An error occurred: %s' % error)
-
-
-def ListLabels(service, user_id):
-    # Call the Gmail API
-    results = service.users().labels().list(userId=user_id).execute()
-    labels = results.get('labels', [])
-
-    if not labels:
-        print('No labels found.')
-    else:
-        print('Labels:')
-        for label in labels:
-            print(label['name'])
-
-
-clip_template = """
-<div class="content">
-<div class="details">
-Original release date: <span>%s</span>
-</div>
-%s
-</div>
-"""
-
-def ParseWootMessage(message, path, i):
-    """Parses an email message from Woot looking for
-    the Monte and Mortimer dialogue. Once finding the
-    dialogue, it will save it to the templates folder.
-    """
-    # for part in message['payload']['parts']:
-    #     print("  Part: {}, Size: {}".format(part['partId'], part['body']['size']))
-    #     data = base64.b64decode(part['body']['data'].replace('-','+'))
-    # with open('msg-{}.txt'.format('1'), 'w') as f:
-    #     f.write(message.decode())
-    for part in message.walk():
-        if part.get_content_maintype() == 'multipart':
+    for part in mime_msg.walk():
+        if part.get_content_maintype() == "multipart":
             continue
-
         try:
-            txt = part.get_payload(decode=True)
-        except:
+            txt = part.get_payload(decode=True).decode("utf-8")
+        except Exception:
             continue
-
-        if 'Monte' in txt or 'Mortimer' in txt or 'monte' in txt or 'mortimer' in txt:
-            print ("-- extracting dialog...")
-
-            # Get Monte/Mortimer dialog
-            content = ""
-            p,q = 0,0
-            while True:
-                # APW: this used to be 'monkey_' prior to 2015-11-20
-                p = txt.find('monkey-', q)
-                if p == -1:
-                    x = txt.find('mortimer-2.png', q)
-                    y = txt.find('monte-2.png', q)
-                    if x > -1 and y > -1:
-                        p = min(x,y)
-                    elif x > -1:
-                        p = x
-                    elif y > -1:
-                        p = y
-                    else:
-                        break
-
-                p = txt.rfind('<table', q, p)
-                q = txt.find('</table', p)
-                if p == -1 or q == -1:
-                    break
-
-                content += txt[p:q+8]
-
-            #print (r)
-            if content != "":
-                date = message['Date'][:-15]
-                html = clip_template % (date, content)
-                print ("-- saving dialog to file...")
-                clip_path = os.path.join(path, "%d" % ((i/1000) + 1))
-                if not os.path.exists(clip_path):
-                    os.mkdir(clip_path)
-                file = os.path.join(clip_path, "%d.html" % (i%1000))
-                if os.path.exists(file):
-                    print ("ERROR: File already exists! (%s)" % file)
-                    exit (1)
-                print ("-- writing %d bytes to %s" % (len(html), file))
-                # f = open(file,"w")
-                # f.write(html)
-                # f.close()
-                return True
-    return False
+        if not any(name in txt for name in ("Monte", "Mortimer", "monte", "mortimer")):
+            continue
+        if not any(marker in txt for marker in CLIP_MARKERS):
+            continue
+        # clips.py's TABLE_RE finds all tables; we filter to those that
+        # reference a known monkey marker so layout tables get dropped.
+        tables = [
+            m.group() for m in TABLE_RE.finditer(txt)
+            if any(marker in m.group() for marker in CLIP_MARKERS)
+        ]
+        if tables:
+            return "".join(tables)
+    return None
 
 
-def main():
-    """Shows basic usage of the Gmail API.
-    Lists the user's Gmail labels.
-    """
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+def email_date_iso(mime_msg) -> str | None:
+    """Parse the Date header into 'YYYY-MM-DD' (clip-record format)."""
+    raw = mime_msg.get("Date")
+    if not raw:
+        return None
+    try:
+        dt = parsedate_to_datetime(raw)
+    except (TypeError, ValueError):
+        return None
+    return dt.date().isoformat() if dt else None
 
-    service = build('gmail', 'v1', credentials=creds)
 
-    path = os.path.abspath("./templates")
-    print("Saving clips to: {}".format(path))
-    n = get_next_clip(path)
+def append_records(path: Path, records: list[dict]) -> None:
+    if not records:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a") as f:
+        for rec in records:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
-    messages = ListMessagesMatchingQuery(service, user_id='me', query='label:woot is:unread')
 
-    # Reverse the list so it's sorted oldest to newest
+def main() -> int:
+    creds = authenticate()
+    service = build("gmail", "v1", credentials=creds, cache_discovery=False)
+
+    messages = list_unread_woot_messages(service)
+    # Process oldest first so clip IDs increase monotonically by send date.
     messages.reverse()
 
-    print("{} new messages".format(len(messages)))
-    for i,msg in enumerate(messages):
-        print("Processing {} of {}...".format(i+1, len(messages)))
-        min_msg = service.users().messages().get(userId='me', id=msg['id'],
-                                                format='minimal').execute()
-        print("-- {}".format(time.asctime(time.gmtime(int(min_msg['internalDate'])/1000))))
+    if not messages:
+        print("No new messages.")
+        return 0
 
-        MarkAsRead(service, 'me', msg['id'])
-        msg = GetMimeMessage(service, 'me', msg['id'])
-        if (ParseWootMessage(msg, path, n)):
-            n += 1
-        # break
+    print(f"Processing {len(messages)} unread message(s)...")
+    next_id = get_next_clip_id(JSONL_PATH)
+    new_records: list[dict] = []
 
-if __name__ == '__main__':
-    main()
+    for i, msg in enumerate(messages, 1):
+        msg_id = msg["id"]
+        try:
+            mime = get_mime_message(service, msg_id)
+        except HttpError as e:
+            print(f"  [{i}] fetch failed for {msg_id}: {e}")
+            continue
+
+        clip_html = extract_clip_html(mime)
+        if clip_html is None:
+            print(f"  [{i}] {msg_id}: no Monte/Mortimer dialogue found; marking read")
+            mark_as_read(service, msg_id)
+            continue
+
+        date_iso = email_date_iso(mime)
+        record = build_clip_record(next_id, clip_html, date_iso)
+        if record is None:
+            print(f"  [{i}] {msg_id}: tables found but no parseable lines; marking read")
+            mark_as_read(service, msg_id)
+            continue
+
+        print(f"  [{i}] {msg_id}: extracted clip #{next_id} ({date_iso or 'no date'}, {len(record['lines'])} lines)")
+        new_records.append(record)
+        next_id += 1
+        mark_as_read(service, msg_id)
+
+    append_records(JSONL_PATH, new_records)
+    print(f"\nAdded {len(new_records)} new clip(s) to {JSONL_PATH.relative_to(ROOT)}.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
