@@ -15,6 +15,7 @@ Use bootstrap_refresh_token.py once locally to mint the refresh token.
 
 from __future__ import annotations
 
+import argparse
 import base64
 import email
 import json
@@ -169,7 +170,7 @@ def append_records(path: Path, records: list[dict]) -> None:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-def main() -> int:
+def main(limit: int | None = None) -> int:
     creds = authenticate()
     service = build("gmail", "v1", credentials=creds, cache_discovery=False)
 
@@ -181,7 +182,12 @@ def main() -> int:
         print("No new messages.")
         return 0
 
-    print(f"Processing {len(messages)} unread message(s)...")
+    total = len(messages)
+    if limit and limit > 0 and limit < total:
+        messages = messages[:limit]
+        print(f"Processing {limit} of {total} unread message(s) (limit applied)...")
+    else:
+        print(f"Processing {total} unread message(s)...")
     next_id = get_next_clip_id(JSONL_PATH)
     new_records: list[dict] = []
 
@@ -217,4 +223,12 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    parser = argparse.ArgumentParser(description="Scrape unread Woot mail into data/clips.jsonl.")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Maximum number of unread messages to process this run. Unset = process all.",
+    )
+    args = parser.parse_args()
+    sys.exit(main(limit=args.limit))
