@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}#{{ clip.id }} &mdash; The Woot Monkeys{% endblock %}
+{% block content %}
+<article class="clip">
+  <header class="clip-header">
+    <h1>The Dialogues of Monte and Mortimer</h1>
+    <p class="clip-meta">
+      <span class="clip-id">#{{ clip.id }}</span>
+      {% if clip.date %}<time datetime="{{ clip.date }}">{{ clip.date_display }}</time>{% endif %}
+    </p>
+  </header>
+
+  <nav class="clip-nav" aria-label="clip navigation">
+    <a href="/{{ first }}/" title="First">&#x23ee;</a>
+    <a href="/{{ prev }}/" title="Previous">&#x25c0;</a>
+    <a href="/random/" title="Random">&#x1f3b2;</a>
+    <a href="/{{ next }}/" title="Next">&#x25b6;</a>
+    <a href="/{{ last }}/" title="Last">&#x23ed;</a>
+  </nav>
+
+  <ol class="dialogue" reversed-aria-hidden>
+    {% for line in clip.lines %}
+    <li class="line {{ line.speaker }}">
+      <img class="avatar" src="/static/img/{{ mortimer_img if line.speaker == 'mortimer' else monte_img }}" alt="{{ line.speaker|capitalize }}" loading="lazy">
+      <p class="bubble">{{ line.text }}</p>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <nav class="clip-nav clip-nav-bottom" aria-label="clip navigation">
+    <a href="/{{ first }}/">&#x23ee; First</a>
+    <a href="/{{ prev }}/">&#x25c0; Prev</a>
+    <a href="/random/">&#x1f3b2; Random</a>
+    <a href="/{{ next }}/">Next &#x25b6;</a>
+    <a href="/{{ last }}/">Last &#x23ed;</a>
+  </nav>
+</article>
+{% endblock %}

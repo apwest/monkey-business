@@ -1,0 +1,175 @@
+:root {
+  --mortimer: #679941;
+  --mortimer-soft: #e8f1de;
+  --monte: #00a4dd;
+  --monte-soft: #def0fb;
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --text: #2a2a2a;
+  --muted: #888;
+  --border: #e4e4e0;
+  --max-width: 680px;
+  --header-bg: #1f1f1f;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: inherit; }
+
+/* ---------- Header ---------- */
+.site-header {
+  background: var(--header-bg);
+  color: white;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.brand {
+  font-family: 'Love Ya Like A Sister', cursive;
+  font-size: 2rem;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.brand:hover { color: #fff; opacity: 0.85; }
+.site-nav {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.95rem;
+}
+.site-nav a {
+  color: #d6d6d6;
+  text-decoration: none;
+}
+.site-nav a:hover { color: white; }
+
+/* ---------- Main / clip layout ---------- */
+main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.clip-header { text-align: center; margin-bottom: 1rem; }
+.clip-header h1 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0 0 0.35rem;
+  color: #444;
+}
+.clip-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.clip-id { font-variant-numeric: tabular-nums; }
+
+/* ---------- Nav controls ---------- */
+.clip-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 1rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+.clip-nav a {
+  min-width: 5rem;
+  padding: 0.5rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  color: var(--text);
+  font-size: 0.95rem;
+  transition: background 0.15s, transform 0.05s;
+}
+.clip-nav a:hover { background: #ececea; }
+.clip-nav a:active { transform: translateY(1px); }
+.clip-nav-bottom { margin-top: 2rem; }
+
+/* ---------- Dialogue ---------- */
+.dialogue {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.line {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  max-width: 100%;
+}
+.line.monte { flex-direction: row-reverse; align-self: flex-end; }
+.line.mortimer { align-self: flex-start; }
+
+.avatar {
+  width: 64px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.bubble {
+  margin: 0;
+  padding: 0.7rem 0.95rem;
+  border-radius: 18px;
+  max-width: 78%;
+  word-wrap: break-word;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+  font-size: 1rem;
+}
+.line.mortimer .bubble {
+  background: var(--mortimer-soft);
+  border-color: var(--mortimer);
+  border-bottom-left-radius: 4px;
+}
+.line.monte .bubble {
+  background: var(--monte-soft);
+  border-color: var(--monte);
+  border-bottom-right-radius: 4px;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+  padding: 1.5rem 1rem 2rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.site-footer p { margin: 0.3rem 0; }
+.site-footer a { color: #666; }
+
+/* ---------- Responsive tweaks ---------- */
+@media (max-width: 480px) {
+  .avatar { width: 52px; }
+  .bubble { font-size: 0.95rem; max-width: 82%; padding: 0.6rem 0.8rem; }
+  .clip-nav a { min-width: 4rem; padding: 0.45rem 0.5rem; font-size: 0.9rem; }
+  .site-nav { gap: 0.9rem; }
+}
