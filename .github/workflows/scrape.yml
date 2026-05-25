@@ -6,6 +6,12 @@ on:
     # usually landed by then.
     - cron: '0 14 * * *'
   workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Max unread messages to process (leave blank to drain everything).'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -32,7 +38,13 @@ jobs:
           GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
           GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
           GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
-        run: python update.py
+          LIMIT: ${{ inputs.limit }}
+        run: |
+          if [ -n "$LIMIT" ]; then
+            python update.py --limit "$LIMIT"
+          else
+            python update.py
+          fi
 
       - name: Commit and push if clips.jsonl changed
         run: |
