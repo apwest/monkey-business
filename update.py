@@ -170,9 +170,48 @@ def append_records(path: Path, records: list[dict]) -> None:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-def main(limit: int | None = None) -> int:
+def inspect_email(service, query: str) -> int:
+    """Read-only: print the first message matching `query`. No state changes."""
+    print(f"Searching: {query!r}\n")
+    response = service.users().messages().list(userId="me", q=query, maxResults=1).execute()
+    msgs = response.get("messages", [])
+    if not msgs:
+        print("No messages found.")
+        return 0
+    msg_id = msgs[0]["id"]
+    mime = get_mime_message(service, msg_id)
+    print(f"Message ID: {msg_id}")
+    print(f"From:       {mime.get('From')}")
+    print(f"Subject:    {mime.get('Subject')}")
+    print(f"Date:       {mime.get('Date')}\n")
+    for i, part in enumerate(mime.walk()):
+        if part.get_content_maintype() == "multipart":
+            continue
+        ct = part.get_content_type()
+        try:
+            txt = part.get_payload(decode=True).decode("utf-8", errors="replace")
+        except Exception as e:
+            print(f"[part {i} {ct}: decode error: {e}]")
+            continue
+        print(f"=== Part {i}: {ct} ({len(txt)} chars) ===")
+        # Cap output so GHA log stays readable. The interesting markup is
+        # almost always in the first ~40 KB; print head + tail if longer.
+        if len(txt) > 40000:
+            print(txt[:20000])
+            print("\n... [truncated] ...\n")
+            print(txt[-20000:])
+        else:
+            print(txt)
+        print()
+    return 0
+
+
+def main(limit: int | None = None, inspect_query: str | None = None) -> int:
     creds = authenticate()
     service = build("gmail", "v1", credentials=creds, cache_discovery=False)
+
+    if inspect_query:
+        return inspect_email(service, inspect_query)
 
     messages = list_unread_woot_messages(service)
     # Process oldest first so clip IDs increase monotonically by send date.
@@ -230,5 +269,13 @@ if __name__ == "__main__":
         default=None,
         help="Maximum number of unread messages to process this run. Unset = process all.",
     )
+    parser.add_argument(
+        "--inspect",
+        type=str,
+        default=None,
+        metavar="QUERY",
+        help="Read-only: print the first message matching this Gmail query and exit. "
+             "Does not mark as read or modify clips.jsonl. Use for debugging email format.",
+    )
     args = parser.parse_args()
-    sys.exit(main(limit=args.limit))
+    sys.exit(main(limit=args.limit, inspect_query=args.inspect))

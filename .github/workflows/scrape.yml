@@ -12,6 +12,11 @@ on:
         required: false
         type: string
         default: ''
+      inspect:
+        description: 'Read-only debug: Gmail query whose first match should be dumped to the run log. Overrides limit. No state changes.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -39,8 +44,11 @@ jobs:
           GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
           GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
           LIMIT: ${{ inputs.limit }}
+          INSPECT: ${{ inputs.inspect }}
         run: |
-          if [ -n "$LIMIT" ]; then
+          if [ -n "$INSPECT" ]; then
+            python update.py --inspect "$INSPECT"
+          elif [ -n "$LIMIT" ]; then
             python update.py --limit "$LIMIT"
           else
             python update.py
