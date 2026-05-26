@@ -4,9 +4,11 @@ Untouched copies of the Monte and Mortimer images as Woot originally shipped
 them in the daily-digest emails. These files are **not deployed** to the public
 site — they live here as an archival reference.
 
-The production copies in `static/img/` were all transparified (white background
-flood-filled to alpha=0 via `png_tools.py transparify`); the originals here
-preserve the as-shipped opaque-background versions.
+The production copies in `static/img/` for v1–v3 were transparified (white
+background flood-filled to alpha=0 via `png_tools.py transparify`); the
+originals here preserve the as-shipped opaque-background versions. The v4
+images already ship with alpha transparency, so the production copy is a
+byte-for-byte copy of the original.
 
 ## File mapping
 
@@ -18,6 +20,8 @@ preserve the as-shipped opaque-background versions.
 | `monte-v2-alt.png`     | `https://d3rqdbvvokrlbl.cloudfront.net/images/email/monkey-right.2.png`                           | `monte-v2-alt.png`          | Flood-fill from all 4 corners                                                                                |
 | `mortimer-v3.png`      | `http://g-ec2.images-amazon.com/images/G/01/woot/emails/acquisition/mortimer-2.png` (also seen via Gmail proxy) | `mortimer-v3.png`           | Flood-fill from **top corners only** (`TL,TR`) — character touches the bottom edge of the frame             |
 | `monte-v3.png`         | `http://g-ec2.images-amazon.com/images/G/01/woot/emails/acquisition/monte-2.png`                  | `monte-v3.png`              | Flood-fill from **top corners only** (`TL,TR`)                                                              |
+| `mortimer-v4.png`      | `https://m.media-amazon.com/images/G/01/woot/emails/rebrand-images/higher-res/MortMonkeyChat._CB<digits>_.png`  | `mortimer-v4.png`           | None — file already ships with alpha. Production copy is a byte-for-byte copy.                              |
+| `monte-v4.png`         | `https://m.media-amazon.com/images/G/01/woot/emails/rebrand-images/higher-res/MonteMonkeyChat._CB<digits>_.png` | `monte-v4.png`              | None — file already ships with alpha. Production copy is a byte-for-byte copy.                              |
 
 ## Style → file mapping in the build
 
@@ -29,7 +33,8 @@ in `data/clips.jsonl`:
 | `v1`     | 2011-07-04 – 2015-11-19  | `mortimer-v1.png`        | `monte-v1.png`        | 1,537      |
 | `v2`     | 2015-11-20 – 2015-12-23  | `mortimer-v2-alt.png` ¹  | `monte-v2-alt.png` ¹  | 34         |
 | `v2-alt` | 2015-12-24 – 2017-09-28  | `mortimer-v2-alt.png`    | `monte-v2-alt.png`    | 628        |
-| `v3`     | 2017-09-20 – present     | `mortimer-v3.png`        | `monte-v3.png`        | 2,528      |
+| `v3`     | 2017-09-20 – 2025-06-05  | `mortimer-v3.png`        | `monte-v3.png`        | 2,528      |
+| `v4`     | 2025-06-06 – present     | `mortimer-v4.png`        | `monte-v4.png`        | TBD (pending re-scrape) |
 
 ¹ The actual v2 originals (`monkey-left.png` / `monkey-right.png`, no `.2`
 suffix) 404 at the CDN with no Wayback Machine snapshot. The build falls back

@@ -42,6 +42,12 @@ URL_STYLE_MAP: dict[str, tuple[str, str]] = {
 # Gmail proxy URLs embed the underlying URL after `#`. Strip the prefix for lookup.
 GMAIL_PROXY_RE = re.compile(r"^https://ci\d+\.googleusercontent\.com/proxy/[^#]*#(http.*)$")
 
+# Era 4 (June 2025+): "rebrand" images on m.media-amazon.com. The cache-bust
+# `._CB<digits>_.png` suffix changes over time, so match by speaker stem
+# instead of exact URL.
+V4_MORT_RE = re.compile(r"MortMonkeyChat", re.IGNORECASE)
+V4_MONTE_RE = re.compile(r"MonteMonkeyChat", re.IGNORECASE)
+
 LEGACY_DATE_RE = re.compile(r"date:\s*<span>(.*?)</span>", re.IGNORECASE)
 TABLE_RE = re.compile(r"<table.*?</table>", re.DOTALL | re.IGNORECASE)
 IMG_SRC_RE = re.compile(r'<img[^>]*\bsrc="([^"]+)"', re.IGNORECASE)
@@ -95,7 +101,15 @@ def parse_clip(raw_html: str) -> tuple[list[dict], set[str]]:
             if mapped:
                 speaker = mapped[0]
                 break
-            # Fall back to filename hints if URL isn't in the map.
+            # v4 (June 2025+): match by speaker stem since URL has a
+            # variable cache-bust suffix.
+            if V4_MORT_RE.search(url):
+                speaker = "mortimer"
+                break
+            if V4_MONTE_RE.search(url):
+                speaker = "monte"
+                break
+            # Fall back to filename hints for legacy variants not in the map.
             lower = url.lower()
             if "monte" in lower or "right" in lower:
                 speaker = "monte"
@@ -123,11 +137,15 @@ def parse_clip(raw_html: str) -> tuple[list[dict], set[str]]:
 
 def infer_style(urls_seen: set[str]) -> str:
     styles = {URL_STYLE_MAP[u][1] for u in urls_seen if u in URL_STYLE_MAP}
+    # URL_STYLE_MAP doesn't list v4 entries (cache-bust suffixes are variable);
+    # detect v4 by stem match against the seen URLs.
+    if any(V4_MORT_RE.search(u) or V4_MONTE_RE.search(u) for u in urls_seen):
+        styles.add("v4")
     if len(styles) == 1:
         return styles.pop()
     if len(styles) > 1:
-        # Mixed within one clip — pick the most "modern" (v3 > v2-alt > v2 > v1).
-        for preferred in ("v3", "v2-alt", "v2", "v1"):
+        # Mixed within one clip — pick the most "modern" (v4 > v3 > v2-alt > v2 > v1).
+        for preferred in ("v4", "v3", "v2-alt", "v2", "v1"):
             if preferred in styles:
                 return preferred
     return "unknown"
