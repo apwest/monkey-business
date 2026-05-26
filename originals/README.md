@@ -22,6 +22,7 @@ byte-for-byte copy of the original.
 | `monte-v3.png`         | `http://g-ec2.images-amazon.com/images/G/01/woot/emails/acquisition/monte-2.png`                  | `monte-v3.png`              | Flood-fill from **top corners only** (`TL,TR`)                                                              |
 | `mortimer-v4.png`      | `https://m.media-amazon.com/images/G/01/woot/emails/rebrand-images/higher-res/MortMonkeyChat._CB<digits>_.png`  | `mortimer-v4.png`           | None — file already ships with alpha. Production copy is a byte-for-byte copy.                              |
 | `monte-v4.png`         | `https://m.media-amazon.com/images/G/01/woot/emails/rebrand-images/higher-res/MonteMonkeyChat._CB<digits>_.png` | `monte-v4.png`              | None — file already ships with alpha. Production copy is a byte-for-byte copy.                              |
+| `header-mortimer.svg`  | `https://d3rqdbvvokrlbl.cloudfront.net/lib/images/sites/header/mortimer.svg` (CloudFront returns HTTP 404 with the SVG in the body — likely misconfigured origin; archived 2026-05-25 in case the body stops being served) | (not deployed yet)          | Archival only — used by the old App Engine site's header. Pending [#10](https://github.com/apwest/monkey-business/issues/10). |
 
 ## Style → file mapping in the build
 
