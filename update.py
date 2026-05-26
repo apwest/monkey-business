@@ -43,9 +43,16 @@ JSONL_PATH = ROOT / "data" / "clips.jsonl"
 
 QUERY = "label:woot is:unread"
 
-# Marker strings that indicate an email's HTML contains a Monte/Mortimer dialogue.
-# Mirrors the heuristic used by the original update.py / migrate.py parser.
-CLIP_MARKERS = ("monkey-", "monkey_", "mortimer-2.png", "monte-2.png")
+# Marker strings (case-insensitive) that indicate an email's HTML contains a
+# Monte/Mortimer dialogue. `MonkeyChat` catches the post-June-2025 (v4) rebrand;
+# the older markers catch v1–v3.
+CLIP_MARKERS = ("monkey-", "monkey_", "MonkeyChat", "mortimer-2.png", "monte-2.png")
+
+
+def _contains_marker(text: str) -> bool:
+    """Case-insensitive substring check across all CLIP_MARKERS."""
+    lower = text.lower()
+    return any(m.lower() in lower for m in CLIP_MARKERS)
 
 
 def authenticate() -> Credentials:
@@ -134,15 +141,15 @@ def extract_clip_html(mime_msg) -> str | None:
             txt = part.get_payload(decode=True).decode("utf-8")
         except Exception:
             continue
-        if not any(name in txt for name in ("Monte", "Mortimer", "monte", "mortimer")):
+        if "monte" not in txt.lower() and "mort" not in txt.lower():
             continue
-        if not any(marker in txt for marker in CLIP_MARKERS):
+        if not _contains_marker(txt):
             continue
         # clips.py's TABLE_RE finds all tables; we filter to those that
         # reference a known monkey marker so layout tables get dropped.
         tables = [
             m.group() for m in TABLE_RE.finditer(txt)
-            if any(marker in m.group() for marker in CLIP_MARKERS)
+            if _contains_marker(m.group())
         ]
         if tables:
             return "".join(tables)

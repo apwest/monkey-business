@@ -27,6 +27,7 @@ STYLE_IMAGES = {
     "v2":     ("mortimer-v2-alt.png", "monte-v2-alt.png"),
     "v2-alt": ("mortimer-v2-alt.png", "monte-v2-alt.png"),
     "v3":     ("mortimer-v3.png",     "monte-v3.png"),
+    "v4":     ("mortimer-v4.png",     "monte-v4.png"),
 }
 DEFAULT_STYLE = "v3"
 
