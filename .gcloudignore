@@ -1,0 +1,7 @@
+# Whitelist mode: deny everything, then re-allow only the shim files.
+# This branch (`appengine`) deploys a 16-line redirect shim, nothing else.
+*
+!.gcloudignore
+!app.yaml
+!main.py
+!requirements.txt
