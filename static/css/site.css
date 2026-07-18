@@ -38,6 +38,19 @@ a { color: inherit; }
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+.brand-group {
+  display: flex;
+  align-items: flex-end;
+  align-self: stretch;
+  gap: 0.6rem;
+}
+.header-mortimer {
+  height: 5rem;
+  width: auto;
+  flex-shrink: 0;
+  /* dangle his feet below the header while his butt rests on the bottom edge */
+  margin-bottom: -2.75rem;
+}
 .brand {
   font-family: 'Love Ya Like A Sister', cursive;
   font-size: 2rem;
@@ -271,6 +284,7 @@ main {
 
 /* ---------- Responsive tweaks ---------- */
 @media (max-width: 480px) {
+  .header-mortimer { display: none; }
   .avatar { width: 52px; }
   .bubble { font-size: 0.95rem; max-width: 82%; padding: 0.6rem 0.8rem; }
   .clip-nav a { min-width: 4rem; padding: 0.45rem 0.5rem; font-size: 0.9rem; }
