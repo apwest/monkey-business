@@ -282,6 +282,76 @@ main {
 .site-footer p { margin: 0.3rem 0; }
 .site-footer a { color: #666; }
 
+/* ---------- Shortcuts overlay ---------- */
+.shortcuts-dialog {
+  position: relative;
+  border: 3px solid black;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  max-width: 22rem;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+}
+.shortcuts-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+.shortcuts-dialog h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.shortcuts-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem 1rem;
+  margin: 0;
+  align-items: center;
+}
+.shortcuts-list dt { margin: 0; }
+.shortcuts-list dd { margin: 0; font-size: 0.95rem; }
+.shortcuts-list kbd {
+  display: inline-block;
+  min-width: 1.4em;
+  padding: 0.12em 0.45em;
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  box-shadow: 0 1px 0 var(--border);
+}
+.shortcuts-note {
+  margin: 1rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.shortcuts-close-form { display: contents; }
+.shortcuts-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: white;
+  background: var(--header-bg);
+  border: none;
+  border-top-right-radius: 9px;
+  border-bottom-left-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.shortcuts-close:hover { opacity: 0.85; }
+
 /* ---------- Responsive tweaks ---------- */
 @media (max-width: 480px) {
   .header-mortimer { display: none; }
