@@ -8,7 +8,7 @@ prints the three values to paste into GitHub Secrets:
     GOOGLE_OAUTH_REFRESH_TOKEN
 
 Usage:
-    venv/bin/python bootstrap_refresh_token.py path/to/client_secret.json
+    venv/bin/python utils/bootstrap_refresh_token.py path/to/client_secret.json
 
 Where client_secret.json is the "Desktop app" OAuth client credentials
 downloaded from Google Cloud Console (APIs & Services → Credentials).

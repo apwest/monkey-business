@@ -5,7 +5,7 @@ them in the daily-digest emails. These files are **not deployed** to the public
 site — they live here as an archival reference.
 
 The production copies in `static/img/` for v1–v3 were transparified (white
-background flood-filled to alpha=0 via `png_tools.py transparify`); the
+background flood-filled to alpha=0 via `utils/png_tools.py transparify`); the
 originals here preserve the as-shipped opaque-background versions. The v4
 images already ship with alpha transparency, so the production copy is a
 byte-for-byte copy of the original.
@@ -52,6 +52,6 @@ If a production image is ever lost or needs to be re-transparified:
 cp originals/<name>.png static/img/<name>.png
 
 # Re-apply the transformation
-python png_tools.py transparify static/img/<name>.png            # v1 / v2-alt
-python png_tools.py transparify --corners TL,TR static/img/<name>.png  # v3
+python utils/png_tools.py transparify static/img/<name>.png            # v1 / v2-alt
+python utils/png_tools.py transparify --corners TL,TR static/img/<name>.png  # v3
 ```

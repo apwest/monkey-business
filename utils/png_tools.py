@@ -10,10 +10,10 @@ Subcommands:
                region transparent. Modifies files in place.
 
 Examples:
-  python png_tools.py info static/img/*.png
-  python png_tools.py corners static/img/monte-v1.png
-  python png_tools.py transparify static/img/monte-v1.png static/img/mortimer-v1.png
-  python png_tools.py transparify --threshold 25 static/img/whatever.png
+  python utils/png_tools.py info static/img/*.png
+  python utils/png_tools.py corners static/img/monte-v1.png
+  python utils/png_tools.py transparify static/img/monte-v1.png static/img/mortimer-v1.png
+  python utils/png_tools.py transparify --threshold 25 static/img/whatever.png
 """
 
 from __future__ import annotations

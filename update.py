@@ -10,7 +10,7 @@ Designed to run headless from GitHub Actions. Credentials come from env vars:
     GOOGLE_OAUTH_CLIENT_SECRET
     GOOGLE_OAUTH_REFRESH_TOKEN
 
-Use bootstrap_refresh_token.py once locally to mint the refresh token.
+Use utils/bootstrap_refresh_token.py once locally to mint the refresh token.
 """
 
 from __future__ import annotations
