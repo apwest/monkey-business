@@ -1,8 +1,7 @@
 """Shared parsing for Monte & Mortimer Woot dialogues.
 
-Both migrate.py (legacy templates/X/Y.html bulk conversion) and update.py
-(daily Gmail scrape) use this module to turn raw HTML into the clip record
-shape stored in data/clips.jsonl:
+update.py (the daily Gmail scrape) uses this module to turn raw email HTML
+into the clip record shape stored in data/clips.jsonl:
 
     {"id": N, "date": "YYYY-MM-DD", "style": "v1|v2|v2-alt|v3|unknown",
      "lines": [{"speaker": "monte|mortimer", "text": "..."}]}
@@ -15,7 +14,6 @@ from __future__ import annotations
 
 import html
 import re
-from datetime import datetime
 
 # URL -> (speaker, style) mapping.
 # Style keys group equivalent images across http/https/proxy variants.
@@ -48,7 +46,6 @@ GMAIL_PROXY_RE = re.compile(r"^https://ci\d+\.googleusercontent\.com/proxy/[^#]*
 V4_MORT_RE = re.compile(r"MortMonkeyChat", re.IGNORECASE)
 V4_MONTE_RE = re.compile(r"MonteMonkeyChat", re.IGNORECASE)
 
-LEGACY_DATE_RE = re.compile(r"date:\s*<span>(.*?)</span>", re.IGNORECASE)
 TABLE_RE = re.compile(r"<table.*?</table>", re.DOTALL | re.IGNORECASE)
 IMG_SRC_RE = re.compile(r'<img[^>]*\bsrc="([^"]+)"', re.IGNORECASE)
 P_TEXT_RE = re.compile(r"<p[^>]*>(.*?)</p>", re.DOTALL | re.IGNORECASE)
@@ -65,23 +62,6 @@ def clean_text(html_fragment: str) -> str:
     text = TAG_RE.sub("", html_fragment)
     text = html.unescape(text)
     return WS_RE.sub(" ", text).strip()
-
-
-def parse_release_date_from_legacy_wrapper(raw_html: str) -> str | None:
-    """Pull the date out of migrate.py's saved 'Original release date: <span>...</span>' wrapper.
-
-    Only relevant for the legacy templates/X/Y.html files. Returns ISO date
-    (YYYY-MM-DD) on success, the raw string if not parseable, or None if no
-    date wrapper is present.
-    """
-    m = LEGACY_DATE_RE.search(raw_html)
-    if not m:
-        return None
-    raw = m.group(1).strip()
-    try:
-        return datetime.strptime(raw, "%a, %d %b %Y").date().isoformat()
-    except ValueError:
-        return raw
 
 
 def parse_clip(raw_html: str) -> tuple[list[dict], set[str]]:
@@ -155,8 +135,7 @@ def build_clip_record(clip_id: int, raw_html: str, date_iso: str | None = None) 
     """Parse raw email HTML into a clip record, or None if no parseable lines.
 
     Returns the record shape stored in data/clips.jsonl. Used by update.py
-    for live Gmail scrapes; migrate.py composes the same shape directly so
-    it can also surface diagnostic stats.
+    for live Gmail scrapes.
     """
     lines, urls_seen = parse_clip(raw_html)
     if not lines:
