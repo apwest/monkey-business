@@ -55,7 +55,7 @@ def build(base_path: str = ""):
     base_path = base_path.rstrip("/")  # "" or "/monkey-business" — never trailing slash
     clips = load_clips()
     if not clips:
-        raise SystemExit("No clips found in data/clips.jsonl — run migrate.py first.")
+        raise SystemExit("No clips found in data/clips.jsonl — run update.py to scrape first.")
 
     ids = [c["id"] for c in clips]
     first_id, last_id = ids[0], ids[-1]
